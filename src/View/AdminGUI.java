@@ -20,9 +20,12 @@ public class AdminGUI extends JFrame{
     private JTextField fld_sh_lastName;
     private JComboBox cmb_sh_rol;
     private JTextField fld_sh_username;
+    private JButton ARAMAButton;
+    private JLabel lbl_welcome;
 
 
     public AdminGUI(){
+
         setContentPane(wrapper);
         setSize(800, 600);
         setTitle(Config.PROJECT_TITLE);
@@ -30,7 +33,19 @@ public class AdminGUI extends JFrame{
         setResizable(true);
         setLocation(Helper.screenLoc("x", getSize()), Helper.screenLoc("y", getSize()));
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+
+
+
+
+
+
+
+
+
     }
+
+
 
 
 

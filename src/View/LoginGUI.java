@@ -2,9 +2,7 @@ package View;
 
 import javax.swing.*;
 import Helper.*;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import Model.User;
 
 public class LoginGUI extends JFrame{
     private JPanel wrapper;
@@ -25,7 +23,27 @@ public class LoginGUI extends JFrame{
 
 
         girişButton.addActionListener(e -> {
-
+            if (Helper.isFieldEmpty(fld_username) || Helper.isFieldEmpty(fld_pass)){
+                Helper.showMsg("fill");
+            }else {
+                User user = User.getFetch(fld_username.getText(), new String(fld_pass.getText()));
+                if (user == null){
+                    Helper.showMsg("Kullanıcı adı bulunamadı.");
+                }else {
+                    switch (user.getRole()){
+                        case "admin":
+                            AdminGUI adminGUI = new AdminGUI();
+                            break;
+                        case "employee":
+                            EmployeeGUI employeeGUI = new EmployeeGUI();
+                            break;
+                        default:
+                            Helper.showMsg("Bilinmeyen rol!");
+                            break;
+                    }
+                    dispose();
+                }
+            }
         });
 
 
