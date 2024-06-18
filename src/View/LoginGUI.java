@@ -3,6 +3,9 @@ package View;
 import javax.swing.*;
 import Helper.*;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 public class LoginGUI extends JFrame{
     private JPanel wrapper;
     private JPanel wtop;
@@ -12,13 +15,20 @@ public class LoginGUI extends JFrame{
     private JButton girişButton;
 
     public LoginGUI(){
-        Helper.setLayout();
         setContentPane(wrapper);
         setSize(350, 340);
         setTitle(Config.PROJECT_TITLE);
         setVisible(true);
+        setResizable(false);
         setLocation(Helper.screenLoc("x", getSize()), Helper.screenLoc("y", getSize()));
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+
+        girişButton.addActionListener(e -> {
+
+        });
+
+
     }
 
 

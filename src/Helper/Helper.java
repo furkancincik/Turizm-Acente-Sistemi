@@ -7,26 +7,6 @@ public class Helper {
 
 
 
-    public static void setLayout() {
-        for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-            if ("".equals(info.getName())) {
-                try {
-                    UIManager.setLookAndFeel(info.getClassName());
-                } catch (ClassNotFoundException e) {
-                    throw new RuntimeException(e);
-                } catch (InstantiationException e) {
-                    throw new RuntimeException(e);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                } catch (UnsupportedLookAndFeelException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            }
-        }
-    }
-
-
     public static int screenLoc(String axis, Dimension size) {
         int point;
         switch (axis) {
