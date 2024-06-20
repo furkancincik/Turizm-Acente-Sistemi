@@ -100,6 +100,31 @@ public class User {
         return userList;
     }
 
+    public static ArrayList<User> searchUser(String username, String firstName, String lastName) {
+        ArrayList<User> userList = new ArrayList<>();
+        String query = "SELECT * FROM users WHERE username LIKE ? AND first_name LIKE ? AND last_name LIKE ?";
+        try {
+            PreparedStatement pst = DBConnector.getInstance().prepareStatement(query);
+            pst.setString(1, "%" + username + "%");
+            pst.setString(2, "%" + firstName + "%");
+            pst.setString(3, "%" + lastName + "%");
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                User obj = new User();
+                obj.setId(rs.getInt("id"));
+                obj.setUsername(rs.getString("username"));
+                obj.setPassword(rs.getString("password"));
+                obj.setFirsName(rs.getString("first_name"));
+                obj.setLastName(rs.getString("last_name"));
+                obj.setRole(rs.getString("role"));
+                userList.add(obj);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return userList;
+    }
+
 
     public static User getFetch(String username) {
         User obj = null;

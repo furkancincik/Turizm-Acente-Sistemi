@@ -10,7 +10,6 @@ public class DBConnector {
     public Connection connectDB(){
         try {
             this.conn = DriverManager.getConnection(Config.DB_URL,Config.DB_USERNAME,Config.DB_PASSWORD);
-            System.out.println("Veritabanına bağlanıldı");
         } catch (SQLException e) {
             e.printStackTrace();
         }
