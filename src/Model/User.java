@@ -1,7 +1,6 @@
 package Model;
 
 import Helper.DBConnector;
-import View.AdminGUI;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,7 +9,7 @@ public class User {
     private int id;
     private String username;
     private String password;
-    private String firsName;
+    private String firstName;
     private String lastName;
     private String role;
 
@@ -19,11 +18,11 @@ public class User {
 
     }
 
-    public User(int id, String username, String password, String firsName, String lastName, String role) {
+    public User(int id, String username, String password, String firstName, String lastName, String role) {
         this.id = id;
         this.username = username;
         this.password = password;
-        this.firsName = firsName;
+        this.firstName = firstName;
         this.lastName = lastName;
         this.role = role;
     }
@@ -52,12 +51,12 @@ public class User {
         this.password = password;
     }
 
-    public String getFirsName() {
-        return firsName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirsName(String firsName) {
-        this.firsName = firsName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getLastName() {
@@ -89,7 +88,7 @@ public class User {
                 obj.setId(rs.getInt("id"));
                 obj.setUsername(rs.getString("username"));
                 obj.setPassword(rs.getString("password"));
-                obj.setFirsName(rs.getString("first_name"));
+                obj.setFirstName(rs.getString("first_name"));
                 obj.setLastName(rs.getString("last_name"));
                 obj.setRole(rs.getString("role"));
                 userList.add(obj);
@@ -99,31 +98,43 @@ public class User {
         }
         return userList;
     }
-
-    public static ArrayList<User> searchUser(String username, String firstName, String lastName) {
+    public static ArrayList<User> searchUserList(String sqlQuery) {
         ArrayList<User> userList = new ArrayList<>();
-        String query = "SELECT * FROM users WHERE username LIKE ? AND first_name LIKE ? AND last_name LIKE ?";
+        User obj;
         try {
-            PreparedStatement pst = DBConnector.getInstance().prepareStatement(query);
-            pst.setString(1, "%" + username + "%");
-            pst.setString(2, "%" + firstName + "%");
-            pst.setString(3, "%" + lastName + "%");
+            PreparedStatement pst = DBConnector.getInstance().prepareStatement(sqlQuery);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
-                User obj = new User();
+                obj = new User();
                 obj.setId(rs.getInt("id"));
+                obj.setFirstName(rs.getString("first_name")); // düzeltilen kısım
+                obj.setLastName(rs.getString("last_name")); // düzeltilen kısım
                 obj.setUsername(rs.getString("username"));
                 obj.setPassword(rs.getString("password"));
-                obj.setFirsName(rs.getString("first_name"));
-                obj.setLastName(rs.getString("last_name"));
-                obj.setRole(rs.getString("role"));
+                obj.setRole(rs.getString("role")); // düzeltilen kısım
                 userList.add(obj);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
         return userList;
     }
+
+    public static PreparedStatement searchQuery(String firstName, String lastName, String username, String role) {
+        String sqlQuery = "SELECT * FROM users WHERE first_name LIKE ? AND last_name LIKE ? AND username LIKE ? ANd role LIKE ?";
+        try {
+            PreparedStatement pst = DBConnector.getInstance().prepareStatement(sqlQuery);
+            pst.setString(1, "%" + firstName + "%");
+            pst.setString(2, "%" + lastName + "%");
+            pst.setString(3, "%" + username + "%");
+            pst.setString(4, "%" + role + "%");
+            return pst;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return null;
+        }
+    }
+
 
 
     public static User getFetch(String username) {
@@ -138,7 +149,7 @@ public class User {
                 obj.setId(rs.getInt("id"));
                 obj.setUsername(rs.getString("username"));
                 obj.setPassword(rs.getString("password"));
-                obj.setFirsName(rs.getString("first_name"));
+                obj.setFirstName(rs.getString("first_name"));
                 obj.setLastName(rs.getString("last_name"));
                 obj.setRole(rs.getString("role"));
             }
@@ -168,7 +179,7 @@ public class User {
                 obj.setId(rs.getInt("id"));
                 obj.setUsername(rs.getString("username"));
                 obj.setPassword(rs.getString("password"));
-                obj.setFirsName(rs.getString("first_name"));
+                obj.setFirstName(rs.getString("first_name"));
                 obj.setLastName(rs.getString("last_name"));
                 obj.setRole(rs.getString("role"));
             }
