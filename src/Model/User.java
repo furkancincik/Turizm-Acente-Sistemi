@@ -98,6 +98,7 @@ public class User {
         }
         return userList;
     }
+
     public static ArrayList<User> searchUserList(String sqlQuery) {
         ArrayList<User> userList = new ArrayList<>();
         User obj;
@@ -107,11 +108,11 @@ public class User {
             while (rs.next()) {
                 obj = new User();
                 obj.setId(rs.getInt("id"));
-                obj.setFirstName(rs.getString("first_name")); // düzeltilen kısım
-                obj.setLastName(rs.getString("last_name")); // düzeltilen kısım
+                obj.setFirstName(rs.getString("first_name"));
+                obj.setLastName(rs.getString("last_name"));
                 obj.setUsername(rs.getString("username"));
                 obj.setPassword(rs.getString("password"));
-                obj.setRole(rs.getString("role")); // düzeltilen kısım
+                obj.setRole(rs.getString("role"));
                 userList.add(obj);
             }
         } catch (SQLException throwables) {
@@ -120,8 +121,9 @@ public class User {
         return userList;
     }
 
+
     public static PreparedStatement searchQuery(String firstName, String lastName, String username, String role) {
-        String sqlQuery = "SELECT * FROM users WHERE first_name LIKE ? AND last_name LIKE ? AND username LIKE ? ANd role LIKE ?";
+        String sqlQuery = "SELECT * FROM users WHERE first_name LIKE ? AND last_name LIKE ? AND username LIKE ? ANd  role LIKE ?";
         try {
             PreparedStatement pst = DBConnector.getInstance().prepareStatement(sqlQuery);
             pst.setString(1, "%" + firstName + "%");
