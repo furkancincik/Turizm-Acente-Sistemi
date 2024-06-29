@@ -29,16 +29,28 @@ public class EmployeeGUI extends JFrame {
     private JTable tbl_employee;
     private JTextField fld_hotel_phone;
     private JComboBox cmb_hotel_stars;
+    private JButton btn_tesisOzellikler;
+    private JComboBox cmb_pTipleri;
+    private DefaultTableModel mdl_hotelList;
+    private Object[] row_hotelList;
 
     public EmployeeGUI(){
 
         setContentPane(wrapper);
-        setSize(1000, 550);
+        setSize(1000, 650);
         setTitle(Config.PROJECT_TITLE);
         setVisible(true);
         setResizable(true);
         setLocation(Helper.screenLoc("x", getSize()), Helper.screenLoc("y", getSize()));
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        mdl_hotelList = new DefaultTableModel();
+        Object[] col_hotelList = {"ID", "İsim", "Şehir", "Bölge", "Adres", "Email", "Telefon", "Yıldız", "Pansiyon Türleri", "Özellikler"};
+        mdl_hotelList.setColumnIdentifiers(col_hotelList);
+        tbl_employee.setModel(mdl_hotelList);
+        row_hotelList = new Object[col_hotelList.length];
+
+        loadHotelModel();
 
         btn_logut.addActionListener(e -> {
             dispose();
@@ -70,7 +82,48 @@ public class EmployeeGUI extends JFrame {
                 }
             }
         });
+
+
+        btn_tesisOzellikler.addActionListener(e -> {
+            new TesisÖzelliklerGUI();
+        });
+
+        btn_search.addActionListener(e -> {
+            String hotelName = fld_sh_hotelName.getText();
+            String hotelCity = fld_sh_hotelCity.getText();
+            String hotelRegion = fld_sh_hotelRegion.getText();
+            String selectedStars = cmb_sh_hotelStars.getSelectedItem().toString();
+
+            // Otelleri ara ve sonuçları al
+            ArrayList<Hotel> searchedHotels = Hotel.searchHotels(hotelName, hotelCity, hotelRegion, Integer.parseInt(selectedStars));
+
+            // Tabloyu temizle
+            DefaultTableModel model = (DefaultTableModel) tbl_employee.getModel();
+            model.setRowCount(0);
+
+            // Sonuçları tabloya ekle
+            for (Hotel hotel : searchedHotels) {
+                Object[] row = new Object[10];
+                row[0] = hotel.getId();
+                row[1] = hotel.getName();
+                row[2] = hotel.getCity();
+                row[3] = hotel.getRegion();
+                row[4] = hotel.getAddress();
+                row[5] = hotel.getEmail();
+                row[6] = hotel.getPhone();
+                row[7] = hotel.getStarsRating();
+                row[8] = hotel.getPension_types();
+                row[9] = hotel.getFeatures();
+                model.addRow(row);
+            }
+
+            // Tabloyu güncelle
+            tbl_employee.setModel(model);
+        });
+
     }
+
+
 
     private void loadHotelModel() {
         DefaultTableModel clearModel = (DefaultTableModel) tbl_employee.getModel();
@@ -81,7 +134,7 @@ public class EmployeeGUI extends JFrame {
 
         // Tabloya otel bilgilerini ekle
         for (Hotel hotel : hotels) {
-            Object[] row = new Object[9];
+            Object[] row = new Object[10];
             row[0] = hotel.getId();
             row[1] = hotel.getName();
             row[2] = hotel.getCity();
@@ -95,7 +148,7 @@ public class EmployeeGUI extends JFrame {
             clearModel.addRow(row);
         }
 
-        // Tabloyu güncelle
+
         tbl_employee.setModel(clearModel);
     }
 

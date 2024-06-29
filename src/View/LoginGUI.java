@@ -28,7 +28,7 @@ public class LoginGUI extends JFrame{
             }else {
                 User user = User.getFetch(fld_username.getText(), new String(fld_pass.getText()));
                 if (user == null){
-                    Helper.showMsg("Kullanıcı adı bulunamadı.");
+                    Helper.showMsg("Kullanıcı adı veya şifre hatalı.");
                 }else {
                     switch (user.getRole()){
                         case "admin":
@@ -38,7 +38,7 @@ public class LoginGUI extends JFrame{
                             EmployeeGUI employeeGUI = new EmployeeGUI();
                             break;
                         default:
-                            Helper.showMsg("Bilinmeyen rol!");
+                            Helper.showMsg("HATA");
                             break;
                     }
                     dispose();

@@ -192,5 +192,63 @@ public class Hotel {
     }
 
 
+    public static ArrayList<Hotel> searchHotels(String hotelName, String hotelCity, String hotelRegion, int starsRating) {
+        ArrayList<Hotel> hotelList = new ArrayList<>();
+        String sqlQuery = "SELECT * FROM hotels WHERE name LIKE ? AND city LIKE ? AND region LIKE ? AND stars = ?";
+        PreparedStatement pst = null;
+        ResultSet rs = null;
 
+        try {
+            pst = DBConnector.getInstance().prepareStatement(sqlQuery);
+            pst.setString(1, "%" + hotelName + "%");
+            pst.setString(2, "%" + hotelCity + "%");
+            pst.setString(3, "%" + hotelRegion + "%");
+            pst.setInt(4, starsRating);
+            rs = pst.executeQuery();
+
+            while (rs.next()) {
+                Hotel hotel = new Hotel();
+                hotel.setId(rs.getInt("id"));
+                hotel.setName(rs.getString("name"));
+                hotel.setCity(rs.getString("city"));
+                hotel.setRegion(rs.getString("region"));
+                hotel.setAddress(rs.getString("address"));
+                hotel.setEmail(rs.getString("email"));
+                hotel.setPhone(rs.getString("phone"));
+                hotel.setStarsRating(rs.getInt("stars"));
+                hotel.setPension_types(rs.getString("pension_types"));
+                hotel.setFeatures(rs.getString("features"));
+                hotelList.add(hotel);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pst != null) pst.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return hotelList;
+    }
+
+
+    public static PreparedStatement searchQuery(String hotelName, String hotelCity, String hotelRegion, int starsRating) {
+        String sqlQuery = "SELECT * FROM hotels WHERE name LIKE ? AND city LIKE ? AND region LIKE ? AND stars = ?";
+        PreparedStatement pst = null;
+
+        try {
+            pst = DBConnector.getInstance().prepareStatement(sqlQuery);
+            pst.setString(1, "%" + hotelName + "%");
+            pst.setString(2, "%" + hotelCity + "%");
+            pst.setString(3, "%" + hotelRegion + "%");
+            pst.setInt(4, starsRating);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return pst;
+    }
 }
