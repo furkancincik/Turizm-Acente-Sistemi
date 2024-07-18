@@ -17,7 +17,7 @@ public class EmployeeGUI extends JFrame {
     private JTextField fld_sh_hotelName;
     private JTextField fld_sh_hotelCity;
     private JTextField fld_sh_hotelRegion;
-    private JComboBox cmb_sh_hotelStars;
+    private JComboBox<String> cmb_sh_hotelStars;
     private JButton btn_search;
     private JTextField fld_hotel_name;
     private JTextField fld_hotel_region;
@@ -28,9 +28,9 @@ public class EmployeeGUI extends JFrame {
     private JButton btn_delete_hotel;
     private JTable tbl_employee;
     private JTextField fld_hotel_phone;
-    private JComboBox cmb_hotel_stars;
+    private JComboBox<Integer> cmb_hotel_stars;
     private JButton btn_tesisOzellikler;
-    private JComboBox cmb_pTipleri;
+    private JComboBox<String> cmb_pTipleri;
     private DefaultTableModel mdl_hotelList;
     private Object[] row_hotelList;
 
@@ -67,10 +67,10 @@ public class EmployeeGUI extends JFrame {
                 String city = fld_hotel_city.getText();
                 String region  = fld_hotel_region.getText();
                 String address = fld_hotel_address.getText();
-                String email = ""; // Burada email alanı için gerekli işlemleri ekleyebilirsiniz.
+                String email = "";
                 String phone = fld_hotel_phone.getText();
-                int starsRating = Integer.parseInt(cmb_hotel_stars.getSelectedItem().toString());
-                String pensionTypes = ""; // Burada pension types alanı için gerekli işlemleri ekleyebilirsiniz.
+                int starsRating = cmb_hotel_stars.getItemAt(cmb_hotel_stars.getSelectedIndex());
+                String pensionTypes = "";
                 String features = "";
 
                 if (Hotel.add(name, city, region, address, email, phone, starsRating, pensionTypes, features)) {
@@ -83,7 +83,6 @@ public class EmployeeGUI extends JFrame {
             }
         });
 
-
         btn_tesisOzellikler.addActionListener(e -> {
             new TesisÖzelliklerGUI();
         });
@@ -92,16 +91,25 @@ public class EmployeeGUI extends JFrame {
             String hotelName = fld_sh_hotelName.getText();
             String hotelCity = fld_sh_hotelCity.getText();
             String hotelRegion = fld_sh_hotelRegion.getText();
-            String selectedStars = cmb_sh_hotelStars.getSelectedItem().toString();
+            String selectedStarsStr = cmb_sh_hotelStars.getSelectedItem().toString();
 
-            // Otelleri ara ve sonuçları al
-            ArrayList<Hotel> searchedHotels = Hotel.searchHotels(hotelName, hotelCity, hotelRegion, Integer.parseInt(selectedStars));
+            int starsRating = -1; // Default value, to retrieve all hotels regardless of stars
 
-            // Tabloyu temizle
+            try {
+                if (!selectedStarsStr.isEmpty()) {
+                    starsRating = Integer.parseInt(selectedStarsStr);
+                }
+            } catch (NumberFormatException ex) {
+                ex.printStackTrace(); // For debugging purposes
+                Helper.showMsg("Invalid star rating");
+                return;
+            }
+
+            ArrayList<Hotel> searchedHotels = Hotel.searchHotels(hotelName, hotelCity, hotelRegion, starsRating);
+
             DefaultTableModel model = (DefaultTableModel) tbl_employee.getModel();
             model.setRowCount(0);
 
-            // Sonuçları tabloya ekle
             for (Hotel hotel : searchedHotels) {
                 Object[] row = new Object[10];
                 row[0] = hotel.getId();
@@ -117,10 +125,9 @@ public class EmployeeGUI extends JFrame {
                 model.addRow(row);
             }
 
-            // Tabloyu güncelle
             tbl_employee.setModel(model);
         });
-
+        tbl_employee.setDefaultEditor(Object.class, null);
     }
 
 
@@ -129,10 +136,8 @@ public class EmployeeGUI extends JFrame {
         DefaultTableModel clearModel = (DefaultTableModel) tbl_employee.getModel();
         clearModel.setRowCount(0);
 
-        // Otellerin listesini al
         ArrayList<Hotel> hotels = Hotel.getList();
 
-        // Tabloya otel bilgilerini ekle
         for (Hotel hotel : hotels) {
             Object[] row = new Object[10];
             row[0] = hotel.getId();
@@ -158,7 +163,7 @@ public class EmployeeGUI extends JFrame {
         fld_hotel_region.setText("");
         fld_hotel_address.setText("");
         fld_hotel_phone.setText("");
-        cmb_hotel_stars.setSelectedIndex(0); // veya istediğiniz bir index
+        cmb_hotel_stars.setSelectedIndex(0); // or any desired index
     }
 
     public static void main(String[] args) {

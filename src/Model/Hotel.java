@@ -106,15 +106,15 @@ public class Hotel {
 
         try {
             PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);
-            pr.setString(1,name);
-            pr.setString(2,city);
-            pr.setString(3,region);
-            pr.setString(4,address);
-            pr.setString(5,email);
-            pr.setString(6,phone);
-            pr.setInt(7,starsRating);
-            pr.setString(8,pension_types);
-            pr.setString(9,features);
+            pr.setString(1, name);
+            pr.setString(2, city);
+            pr.setString(3, region);
+            pr.setString(4, address);
+            pr.setString(5, email);
+            pr.setString(6, phone);
+            pr.setInt(7, starsRating);
+            pr.setString(8, pension_types);
+            pr.setString(9, features);
             return pr.executeUpdate() != -1;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -122,8 +122,6 @@ public class Hotel {
 
         return false;
     }
-
-
 
     public static ArrayList<Hotel> getFetch(String query) {
         ArrayList<Hotel> hotels = new ArrayList<>();
@@ -191,19 +189,30 @@ public class Hotel {
         return hotels;
     }
 
-
     public static ArrayList<Hotel> searchHotels(String hotelName, String hotelCity, String hotelRegion, int starsRating) {
         ArrayList<Hotel> hotelList = new ArrayList<>();
-        String sqlQuery = "SELECT * FROM hotels WHERE name LIKE ? AND city LIKE ? AND region LIKE ? AND stars = ?";
+        String sqlQuery;
         PreparedStatement pst = null;
         ResultSet rs = null;
 
         try {
-            pst = DBConnector.getInstance().prepareStatement(sqlQuery);
-            pst.setString(1, "%" + hotelName + "%");
-            pst.setString(2, "%" + hotelCity + "%");
-            pst.setString(3, "%" + hotelRegion + "%");
-            pst.setInt(4, starsRating);
+            // starsRating -1 veya belirli bir yıldıza göre filtreleme yapılacaksa
+            if (starsRating != -1) {
+                sqlQuery = "SELECT * FROM hotels WHERE name LIKE ? AND city LIKE ? AND region LIKE ? AND stars = ?";
+                pst = DBConnector.getInstance().prepareStatement(sqlQuery);
+                pst.setString(1, "%" + hotelName + "%");
+                pst.setString(2, "%" + hotelCity + "%");
+                pst.setString(3, "%" + hotelRegion + "%");
+                pst.setInt(4, starsRating);
+            } else {
+                // starsRating -1 ise (yani boş seçildiyse), tüm otelleri getir
+                sqlQuery = "SELECT * FROM hotels WHERE name LIKE ? AND city LIKE ? AND region LIKE ?";
+                pst = DBConnector.getInstance().prepareStatement(sqlQuery);
+                pst.setString(1, "%" + hotelName + "%");
+                pst.setString(2, "%" + hotelCity + "%");
+                pst.setString(3, "%" + hotelRegion + "%");
+            }
+
             rs = pst.executeQuery();
 
             while (rs.next()) {
@@ -233,7 +242,6 @@ public class Hotel {
 
         return hotelList;
     }
-
 
     public static PreparedStatement searchQuery(String hotelName, String hotelCity, String hotelRegion, int starsRating) {
         String sqlQuery = "SELECT * FROM hotels WHERE name LIKE ? AND city LIKE ? AND region LIKE ? AND stars = ?";
